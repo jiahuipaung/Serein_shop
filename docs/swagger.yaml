@@ -1,0 +1,72 @@
+basePath: /api/v1
+definitions:
+  types.UserLoginReq:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  types.UserRegisterReq:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  types.UserTokenData:
+    properties:
+      access_token:
+        type: string
+      refresh_token:
+        type: string
+      user: {}
+    type: object
+host: localhost:5001
+info:
+  contact:
+    email: jiahuipaung@gmail.com
+    name: Serein shop support
+    url: http://www.swagger.io/support
+  description: This is serein shop server v1.0
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Serein Shop server
+  version: "1.0"
+paths:
+  /api/v1/login:
+    post:
+      parameters:
+      - description: 用户登录请求参数
+        in: body
+        name: param
+        required: true
+        schema:
+          $ref: '#/definitions/types.UserLoginReq'
+      responses:
+        "200":
+          description: 成功
+          schema:
+            $ref: '#/definitions/types.UserTokenData'
+      summary: 用户登录
+      tags:
+      - 登录注册
+  /api/v1/register:
+    post:
+      parameters:
+      - description: 用户注册请求参数
+        in: body
+        name: param
+        required: true
+        schema:
+          $ref: '#/definitions/types.UserRegisterReq'
+      responses: {}
+      summary: 新用户注册
+      tags:
+      - 登录注册
+securityDefinitions:
+  BasicAuth:
+    type: basic
+swagger: "2.0"

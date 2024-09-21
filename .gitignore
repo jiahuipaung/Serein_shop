@@ -20,6 +20,14 @@
 # Go workspace file
 go.work
 go.work.sum
+go.sum
 
 # env file
 .env
+
+# http签名
+*.crt
+*.key
+
+# 忽略所有隐藏文件
+.*
