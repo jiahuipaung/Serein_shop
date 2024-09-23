@@ -131,3 +131,28 @@ func (s *ProductSrv) ProductList(ctx context.Context, req *types.ProductListReq)
 	}
 	return
 }
+
+func (s *ProductSrv) ProductShow(ctx context.Context, req *types.ProductShowReq) (resp interface{}, err error) {
+	p, err := dao.NewProductDao(ctx).ShowProductById(req.ID)
+	if err != nil {
+		log.LogrusObj.Error(err)
+		return
+	}
+
+	pResp := &types.ProductResp{
+		ID:         req.ID,
+		Name:       p.Name,
+		CategoryID: p.CategoryID,
+		Title:      p.Title,
+		Info:       p.Info,
+		ImgPath:    p.ImgPath,
+		Price:      p.Price,
+	}
+
+	if conf.Config.System.UploadModel == consts.UploadModelLocal {
+		pResp.ImgPath = conf.Config.PhotoPath.PhotoHost + conf.Config.System.HttpPort + conf.Config.PhotoPath.ProductPath + pResp.ImgPath
+	}
+
+	resp = pResp
+	return
+}

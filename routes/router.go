@@ -29,8 +29,9 @@ func NewRouter() *gin.Engine {
 		v1.POST("user/login", api.UserLoginHandler())
 
 		// 商品服务
-		v1.GET("/product/list", api.ListProductsHandler())
-		// v1.GET("/category/list", api.List)
+		v1.GET("product/list", api.ListProductsHandler())
+		v1.GET("product/show", api.ShowProductsHandler())
+		v1.GET("category/list", api.ListCategoryHandler())       // 商品分类
 
 		authed := v1.Group("/") // 需要登陆保护
 		authed.Use(middleware.AuthMiddleware())
@@ -40,6 +41,11 @@ func NewRouter() *gin.Engine {
 			authed.GET("cart/list", api.ListCartHandler())
 			authed.POST("cart/update", api.UpdateCartHandler())
 			authed.POST("cart/delete", api.DeleteCartHandler())
+
+			// 用户信息操作
+			authed.POST("user/update", api.UserUpdateHandler())
+
+			
 		}
 	}
 	swaggerGroup := r.Group("swagger")

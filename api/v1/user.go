@@ -21,9 +21,10 @@ var emailRegex = regexp.MustCompile(`^[a-z0-9,_%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$`)
 
 //	@Summary	新用户注册
 //	@title		后台接口
-//	@Tags		登录注册
-//	@Router		/api/v1/register [post]
+//	@Tags		用户服务
+//	@Router		/api/v1/user/register [post]
 //	@param		param	body	types.UserRegisterReq	true	"用户注册请求参数"
+//
 // @Success 200 {object} types.UserTokenData "成功"
 func UserRegisterHandler() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
@@ -54,9 +55,10 @@ func UserRegisterHandler() gin.HandlerFunc {
 
 //	@Summary	用户登录
 //	@title		后台接口
-//	@Tags		登录注册
-//	@Router		/api/v1/login [post]
+//	@Tags		用户服务
+//	@Router		/api/v1/user/login [post]
 //	@param		param	body	types.UserLoginReq	true	"用户登录请求参数"
+//
 // @Success 200 {object} types.UserTokenData "成功"
 func UserLoginHandler() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
@@ -76,6 +78,34 @@ func UserLoginHandler() gin.HandlerFunc {
 			return
 		}
 		ctx.JSON(http.StatusOK, "登录成功")
+	}
+}
+
+//	@Summary	用户信息更新
+//	@title		后台接口
+//	@Tags		用户服务
+//	@Router		/api/v1/user/update [post]
+//	@param		param	body	types.UserLoginReq	true	"用户登录请求参数"
+//
+// @Success 200 {object} types.UserTokenData "成功"
+func UserUpdateHandler() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		var req types.UserInfoUpdateReq
+		if err := ctx.ShouldBind(&req); err != nil {
+			// 参数校验
+			log.LogrusObj.Infoln(err)
+			ctx.JSON(http.StatusBadRequest, "error: args")
+			return
+		}
+
+		l := service.GetUserSrv()
+		resp, err := l.UserInfoUpdate(ctx.Request.Context(), &req)
+		if err != nil {
+			log.LogrusObj.Infoln(err)
+			ctx.JSON(http.StatusInternalServerError, "error: userinfo update")
+			return
+		}
+		ctx.JSON(http.StatusOK, resp)
 	}
 }
 

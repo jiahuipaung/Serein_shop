@@ -33,3 +33,8 @@ type ProductCreateReq struct {
 type ListProductImgReq struct {
 	ID uint `json:"id" form:"id"`
 }
+
+type ProductShowReq struct {
+	ID uint `form:"id" json:"id"`
+}
+

@@ -4,7 +4,7 @@ type ListCategoryReq struct {
 }
 
 type ListCategoryResp struct {
-	ID int `json:"id"`
+	ID           uint   `json:"id"`
 	CategoryName string `json:"category_name"`
-	CreateAt int64 
+	CreateAt     int64
 }
