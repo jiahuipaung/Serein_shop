@@ -11,6 +11,7 @@ import (
 
 	api "serein/api/v1"
 	_ "serein/docs"
+
 	swaggerFiles "github.com/swaggo/files"     // swagger embed files
 	ginSwagger "github.com/swaggo/gin-swagger" // gin-swagger middleware
 )
@@ -31,11 +32,15 @@ func NewRouter() *gin.Engine {
 		// 商品服务
 		v1.GET("product/list", api.ListProductsHandler())
 		v1.GET("product/show", api.ShowProductsHandler())
-		v1.GET("category/list", api.ListCategoryHandler())       // 商品分类
+		v1.GET("product/search", api.SearchProductsHandler())
+		v1.GET("category/list", api.ListCategoryHandler()) // 商品分类
 
 		authed := v1.Group("/") // 需要登陆保护
 		authed.Use(middleware.AuthMiddleware())
 		{
+			// 商品操作
+			authed.POST("product/create", api.create)
+
 			// 购物车操作
 			authed.POST("cart/create", api.CreateCartHandler())
 			authed.GET("cart/list", api.ListCartHandler())
@@ -45,7 +50,6 @@ func NewRouter() *gin.Engine {
 			// 用户信息操作
 			authed.POST("user/update", api.UserUpdateHandler())
 
-			
 		}
 	}
 	swaggerGroup := r.Group("swagger")

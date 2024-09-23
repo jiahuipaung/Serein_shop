@@ -12,6 +12,7 @@ import (
 	// conf "serein/config"
 
 	"serein/pkg/utils/ctl"
+	"serein/pkg/utils/ctl"
 	"serein/pkg/utils/log"
 	"serein/repository/db/dao"
 	"serein/repository/db/model"
@@ -132,5 +133,7 @@ func (s *UserSrv) UserInfoUpdate(ctx context.Context, req *types.UserInfoUpdateR
 		return nil, err
 	}
 
-	return 
+	
+
+	return
 }

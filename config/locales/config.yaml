@@ -9,7 +9,7 @@ system:
 mysql:
   default:
     dialect: "mysql"
-    dbHost: "127.0.0.1"
+    dbHost: "localhost"
     dbPort: "3306"
     dbName: "serein_db"
     userName: "serein_root"
