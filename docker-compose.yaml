@@ -1,0 +1,27 @@
+version: '3.7'
+
+networks:
+  mall:
+    driver: bridge
+
+services:
+  mysql:
+    container_name: mysql
+    image: mysql:latest
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+      - MYSQL_DATABASE=serein_db
+      - MYSQL_USER=serein_root
+      - MYSQL_PASSWORD=123456
+      - TZ=Asia/Shanghai
+    volumes:
+      - ./config/sql:/docker-entrypoint-initdb.d/
+    ports:
+      - "3306:3306"
+  
+  web:
+    build: .
+    depends_on:
+    - mysql
+  

@@ -11,6 +11,8 @@ import (
 
 	// conf "serein/config"
 
+	"serein/pkg/utils/ctl"
+	"serein/pkg/utils/ctl"
 	"serein/pkg/utils/log"
 	"serein/repository/db/dao"
 	"serein/repository/db/model"
@@ -114,6 +116,24 @@ func (s *UserSrv) UserLogin(ctx context.Context, req *types.UserLoginReq) (resp 
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
 	}
+
+	return
+}
+
+// 用户信息更新
+func (s *UserSrv) UserInfoUpdate(ctx context.Context, req *types.UserInfoUpdateReq) (resp interface{}, err error) {
+	// 找到该用户
+	u, _ := ctl.GetUserInfo(ctx)
+	userDao := dao.NewUserDao(ctx)
+	user, err := userDao.GeuUserByID(u.Id)
+
+	err = userDao.UpdateUserById(u.Id, user)
+	if err != nil {
+		log.LogrusObj.Error(err)
+		return nil, err
+	}
+
+	
 
 	return
 }

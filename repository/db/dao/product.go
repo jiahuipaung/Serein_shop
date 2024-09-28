@@ -37,8 +37,6 @@ func (dao *ProductDao) ShowProductById(id uint) (product *model.Product, err err
 	return
 }
 
-
-
 // ListProductByCondition 获取商品列表
 func (dao *ProductDao) ListProductByCondition(condition map[string]interface{}, page types.BasePage) (products []*model.Product, err error) {
 	err = dao.DB.Where(condition).
@@ -61,4 +59,28 @@ func (dao *ProductDao) CountProductByCondition(condition map[string]interface{})
 		Where(condition).Count(&total).Error
 
 	return
+}
+
+func (dao *ProductDao) SearchProduct(info string, page types.BasePage) (products []*model.Product, count int64, err error) {
+	err = dao.DB.Model(&model.Product{}).
+		Where("name LIKE ? OR info LIKE ?", "%"+info+"%", "%"+info+"%").
+		Offset((page.PageNum - 1) * page.PageSize).
+		Limit(page.PageSize).
+		Find(&products).Error
+
+	if err != nil {
+		return
+	}
+
+	err = dao.DB.Model(&model.Product{}).
+		Where("name LIKE ? OR info LIKE ?", "%"+info+"%", "%"+info+"%").
+		Count(&count).Error
+
+	return
+}
+
+func (dao *ProductDao) DeleteProduct(pID uint) error {
+	return dao.DB.Model(&model.Product{}).
+		Where("id = ?", pID).
+		Delete(&model.Product{}).Error
 }

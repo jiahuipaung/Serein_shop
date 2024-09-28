@@ -39,3 +39,16 @@ func (dao *UserDao) ExistOrNotByEmail(email string) (user *model.User, exist boo
 func (dao *UserDao) CreateUser(user *model.User) error {
 	return dao.DB.Model(&model.User{}).Create(&user).Error
 }
+
+// GeuUserByID 根据user_id获取用户相关信息
+func (dao *UserDao) GeuUserByID(uID uint) (user *model.User, err error) {
+	err = dao.DB.Model(&model.User{}).
+		Where("id = ?", uID).
+		First(&user).Error
+	return
+}
+
+func (dao *UserDao) UpdateUserById(uID uint, user *model.User) error {
+	return dao.DB.Model(&model.User{}).Where("id=?", uID).
+		Updates(&user).Error
+}

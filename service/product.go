@@ -14,6 +14,7 @@ import (
 	conf "serein/config"
 
 	// "serein/pkg/utils/ctl"
+
 	"serein/pkg/utils/log"
 	"serein/repository/db/dao"
 	"serein/repository/db/model"
@@ -128,6 +129,72 @@ func (s *ProductSrv) ProductList(ctx context.Context, req *types.ProductListReq)
 	resp = &types.DataListResp{
 		Item:  pRespList,
 		Total: total,
+	}
+	return
+}
+
+func (s *ProductSrv) ProductShow(ctx context.Context, req *types.ProductShowReq) (resp interface{}, err error) {
+	p, err := dao.NewProductDao(ctx).ShowProductById(req.ID)
+	if err != nil {
+		log.LogrusObj.Error(err)
+		return
+	}
+
+	pResp := &types.ProductResp{
+		ID:         req.ID,
+		Name:       p.Name,
+		CategoryID: p.CategoryID,
+		Title:      p.Title,
+		Info:       p.Info,
+		ImgPath:    p.ImgPath,
+		Price:      p.Price,
+	}
+
+	if conf.Config.System.UploadModel == consts.UploadModelLocal {
+		pResp.ImgPath = conf.Config.PhotoPath.PhotoHost + conf.Config.System.HttpPort + conf.Config.PhotoPath.ProductPath + pResp.ImgPath
+	}
+
+	resp = pResp
+	return
+}
+
+func (s *ProductSrv) ProductSearch(ctx context.Context, req *types.ProductSearchReq) (resp interface{}, err error) {
+	products, count, err := dao.NewProductDao(ctx).SearchProduct(req.Info, req.BasePage)
+	if err != nil {
+		log.LogrusObj.Error(err)
+		return
+	}
+
+	pRespList := make([]*types.ProductResp, 0)
+	for _, p := range products {
+		pResp := &types.ProductResp{
+			ID:         p.ID,
+			Name:       p.Name,
+			CategoryID: p.CategoryID,
+			Title:      p.Title,
+			Info:       p.Info,
+			ImgPath:    p.ImgPath,
+			Price:      p.Price,
+		}
+		if conf.Config.System.UploadModel == consts.UploadModelLocal {
+			pResp.ImgPath = conf.Config.PhotoPath.PhotoHost + conf.Config.System.HttpPort + conf.Config.PhotoPath.ProductPath + pResp.ImgPath
+		}
+		pRespList = append(pRespList, pResp)
+	}
+
+	resp = &types.DataListResp{
+		Item:  pRespList,
+		Total: count,
+	}
+
+	return
+}
+
+func (s *ProductSrv) ProductDelete(ctx context.Context, req *types.ProductDeleteReq) (resp interface{}, err error) {
+	err = dao.NewProductDao(ctx).DeleteProduct(req.ID)
+	if err != nil {
+		log.LogrusObj.Error(err)
+		return
 	}
 	return
 }
